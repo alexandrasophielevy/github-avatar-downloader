@@ -9,27 +9,23 @@ var Owner = args[2]
 var Name = args[3]
 
 function getRepoContributors(repoOwner, repoName, cb) {
-  var URL = 'https://'
-  URL += GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors'
-  var options = {
-    headers: {
-      'User-Agent': 'GitHub Avatar Downloader - Student Project'
-    },
-    url: URL
+  if (!repoOwner || !repoName) {
+    console.log('error!')
+  } else {
+    var URL = 'https://'
+    URL += GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors'
+    var options = {
+      headers: {
+        'User-Agent': 'GitHub Avatar Downloader - Student Project'
+      },
+      url: URL
+    }
+    request(options, function(err, response, body) {
+      var jsonBody = JSON.parse(body)
+      cb(err, jsonBody)
+    })
   }
-  request(options, function(err, response, body) {
-    var jsonBody = JSON.parse(body)
-    cb(err, jsonBody)
-  })
-}
-
-getRepoContributors(Owner, Name, function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
-  for(var i = 0; i < result.length; i++) {
-    downloadImageByURL(result[i].avatar_url, 'avatars/' + result[i].login + '.jpg')
-  }
-});
+};
 
 function downloadImageByURL(url, filePath) {
   request.get(url)
@@ -42,3 +38,12 @@ function downloadImageByURL(url, filePath) {
   })
   .pipe(fs.createWriteStream(filePath));
 }
+
+
+getRepoContributors(Owner, Name, function(err, result) {
+  console.log("Errors:", err);
+  console.log("Result:", result);
+  for(var i = 0; i < result.length; i++) {
+    downloadImageByURL(result[i].avatar_url, 'avatars/' + result[i].login + '.jpg')
+  }
+})
