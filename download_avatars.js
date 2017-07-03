@@ -1,8 +1,12 @@
 var request = require('request');
 var fs = require('fs');
+var args = process.argv;
 
 var GITHUB_USER = 'alexandrasophielevy'
 var GITHUB_TOKEN = '6238442fe70fb4afdebb862ccf75e464416ffaa2'
+
+var Owner = args[2]
+var Name = args[3]
 
 function getRepoContributors(repoOwner, repoName, cb) {
   var URL = 'https://'
@@ -19,7 +23,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
   })
 }
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+getRepoContributors(Owner, Name, function(err, result) {
   console.log("Errors:", err);
   console.log("Result:", result);
   for(var i = 0; i < result.length; i++) {
